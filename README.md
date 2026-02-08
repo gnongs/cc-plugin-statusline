@@ -3,7 +3,7 @@
 Claude Code statusline plugin that shows account info, subscription rate limits, model, cost, and context usage.
 
 ```
-jinhong@gmail.com(Max, Opus 4.6) | session: ██░░░░░░░░ 15% | week: ░░░░░░░░░░ 2%
+user@example.com(Max, Opus 4.6) | session: ██░░░░░░░░ 15% | week: ░░░░░░░░░░ 2%
 my-project(main +3 !1 ?2) | context: ██████░░░░ 58%
 ```
 
@@ -22,8 +22,8 @@ claude install-plugin /path/to/claude-statusline-plugin
 Or clone and install:
 
 ```bash
-git clone https://github.com/gnongs/claude-statusline-plugin.git
-claude install-plugin ./claude-statusline-plugin
+git clone https://github.com/gnongs/cc-plugin-statusline.git
+claude install-plugin ./cc-plugin-statusline
 ```
 
 After installing, run the setup command inside Claude Code:
