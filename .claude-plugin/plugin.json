@@ -1,0 +1,7 @@
+{
+  "name": "claude-statusline",
+  "description": "Claude Code statusline showing account info, subscription rate limits (5h/7d), model, cost, and context usage via Anthropic OAuth API",
+  "author": {
+    "name": "gnongs"
+  }
+}
