@@ -7,7 +7,7 @@ import time
 CACHE_DIR = "/tmp/claude_statusline"
 USAGE_CACHE = os.path.join(CACHE_DIR, "usage.json")
 PROFILE_CACHE = os.path.join(CACHE_DIR, "profile.json")
-USAGE_TTL = 60
+USAGE_TTL = 300
 PROFILE_TTL = 3600
 
 
