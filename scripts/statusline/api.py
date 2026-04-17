@@ -9,6 +9,7 @@ USAGE_CACHE = os.path.join(CACHE_DIR, "usage.json")
 PROFILE_CACHE = os.path.join(CACHE_DIR, "profile.json")
 USAGE_TTL = 300
 PROFILE_TTL = 3600
+STALE_MAX_AGE = 1800
 
 
 def get_oauth_token():
@@ -57,11 +58,14 @@ def _read_cache(path, ttl):
     return None
 
 
-def _read_stale_cache(path):
+def _read_stale_cache(path, max_age=STALE_MAX_AGE):
+    """Return stale cache data if within max_age; pass max_age=None to disable the limit."""
     try:
         if os.path.exists(path):
             with open(path, 'r') as f:
-                return json.load(f).get("data")
+                cache = json.load(f)
+            if max_age is None or time.time() - cache.get("ts", 0) < max_age:
+                return cache.get("data")
     except Exception:
         pass
     return None
@@ -94,9 +98,34 @@ def _curl_api(endpoint, token):
     return None
 
 
+def _usage_reset_expired(data):
+    """True if any bucket's resets_at is already in the past — forces refetch."""
+    if not data:
+        return False
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+    for key in ("five_hour", "seven_day"):
+        bucket = data.get(key)
+        if not bucket:
+            continue
+        resets_at = bucket.get("resets_at")
+        if not resets_at:
+            continue
+        try:
+            if isinstance(resets_at, (int, float)):
+                dt = datetime.fromtimestamp(resets_at, tz=timezone.utc)
+            else:
+                dt = datetime.fromisoformat(str(resets_at).replace("Z", "+00:00"))
+            if dt <= now:
+                return True
+        except Exception:
+            continue
+    return False
+
+
 def fetch_usage():
     cached = _read_cache(USAGE_CACHE, USAGE_TTL)
-    if cached:
+    if cached and not _usage_reset_expired(cached):
         return cached
     token = get_oauth_token()
     if not token:

@@ -5,6 +5,19 @@ from dataclasses import dataclass
 R = "\033[0m"
 
 
+def fmt_pct(u):
+    """Floor to int but cap sub-100% values at 99 so only true saturation shows 100%."""
+    try:
+        u = float(u)
+    except (TypeError, ValueError):
+        return 0
+    if u >= 100:
+        return 100
+    if u <= 0:
+        return 0
+    return min(int(u), 99)
+
+
 def color_for_percent(pct):
     if pct >= 90:
         return "\033[31m"

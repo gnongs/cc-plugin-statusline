@@ -22,7 +22,7 @@ if not __package__:
 
 from .git import get_git_info
 from .api import fetch_usage, fetch_profile
-from .display import R, progress_bar, format_reset_hours, format_reset_date
+from .display import R, progress_bar, format_reset_hours, format_reset_date, fmt_pct
 
 
 def main():
@@ -48,13 +48,13 @@ def main():
         if usage:
             fh = usage.get("five_hour")
             if fh:
-                pct = round(fh.get("utilization", 0))
+                pct = fmt_pct(fh.get("utilization", 0))
                 reset = format_reset_hours(fh.get("resets_at"))
                 label = f"session(\033[90m{reset}{R})" if reset else "session"
                 rate_parts.append(f"{label} {progress_bar(pct)}")
             sd = usage.get("seven_day")
             if sd:
-                pct = round(sd.get("utilization", 0))
+                pct = fmt_pct(sd.get("utilization", 0))
                 reset = format_reset_date(sd.get("resets_at"))
                 label = f"week(\033[90m{reset}{R})" if reset else "week"
                 rate_parts.append(f"{label} {progress_bar(pct)}")
